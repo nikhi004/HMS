@@ -1,0 +1,87 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Room {
+  createdAt  DateTime        @default(now())
+  hostel     Hostel?         @relation(fields: [hostelId], references: [id])
+  hostelId   String?
+  id         String          @id @default(cuid())
+  roomNumber String?
+  status     EnumRoomStatus?
+  updatedAt  DateTime        @updatedAt
+}
+
+model Hostel {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  location   String?
+  name       String?
+  rooms      Room[]
+  staffItems Staff[]
+  students   Student[]
+  updatedAt  DateTime  @updatedAt
+  users      User[]
+}
+
+model Student {
+  address            String?
+  createdAt          DateTime           @default(now())
+  guardianDetails    Json?
+  hostel             Hostel?            @relation(fields: [hostelId], references: [id])
+  hostelId           String?
+  id                 String             @id @default(cuid())
+  name               String?
+  parentDetails      Json?
+  photo              Json?
+  registrationNumber String?
+  rollNumber         String?
+  status             EnumStudentStatus?
+  updatedAt          DateTime           @updatedAt
+}
+
+model Staff {
+  address            String?
+  contactInformation String?
+  createdAt          DateTime @default(now())
+  hostel             Hostel?  @relation(fields: [hostelId], references: [id])
+  hostelId           String?
+  id                 String   @id @default(cuid())
+  name               String?
+  photo              Json?
+  position           String?
+  qualification      String?
+  updatedAt          DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime      @default(now())
+  email     String?       @unique
+  firstName String?
+  hostel    Hostel?       @relation(fields: [hostelId], references: [id])
+  hostelId  String?
+  id        String        @id @default(cuid())
+  lastName  String?
+  password  String
+  role      EnumUserRole?
+  roles     Json
+  updatedAt DateTime      @updatedAt
+  username  String        @unique
+}
+
+enum EnumRoomStatus {
+  Option1
+}
+
+enum EnumStudentStatus {
+  Option1
+}
+
+enum EnumUserRole {
+  Option1
+}
